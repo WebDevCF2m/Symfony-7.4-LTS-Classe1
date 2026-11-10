@@ -19,8 +19,7 @@ https://endoflife.date/symfony
 ---
 
 ## Menu de navigation
-- [Code](https://github.com/mikhawa/symfony-2023-05-10)
-    - [Utilisation des tags de github](#utilisation-des-tags-de-github)
+- [Code](https://github.com/mikhawa/Symfony-7.4-LTS)
     - [Historique de Symfony](#historique-de-symfony)
     - [Choix de Symfony](#choix-de-symfony)
     - [Prérequis](#prérequis)
@@ -144,29 +143,6 @@ https://endoflife.date/symfony
 
 ---
 
-
-### Utilisation des tags de github
-
-Différents `tag` de `git` sont utilisés pour marquer les différentes étapes de ce tutoriel sur Symfony.
-
-Vous les trouverez à cette URL :
-
-https://github.com/mikhawa/Symfony-6.4-LTS/tags
-
-Ainsi, vous pourrez retourner dans le code source et pourrez voir le code source correspondant à l'étape du tutoriel.
-
-Une partie du code sera supprimée et une autre partie sera ajoutée, le système de `tag` de `git` permettra de retrouver le code source correspondant à celle-ci, car il est lié à un `commit` de `git`.
-
-Par exemple le tag v0.0.1 correspond au commit qui met la route par défaut de Symfony sur la page d'accueil :
-
-https://github.com/mikhawa/Symfony-6.4-LTS/releases/tag/v0.1
-
-
----
-
-Retour au [Menu de navigation](#menu-de-navigation)
-
----
 
 
 
