@@ -1,8 +1,8 @@
-# Symfony-6.4-LTS
+# Symfony-7.4-LTS
 
-## Version installée de Symfony 6.4.10
+## Version installée de Symfony 7.4.23
 
-Version LTS (Long Term Support) de Symfony en date du 22/08/2024
+Version LTS (Long Term Support) de Symfony en date du 10/11/2026
 
 Avec 2 ans de support et 3 ans de support de sécurité :
 
@@ -14,7 +14,7 @@ https://endoflife.date/symfony
 
 (Ancienne version, à mettre à jour)
 
-https://sym6.cf2m.be/
+### à refaire https://sym6.cf2m.be/
 
 ---
 
