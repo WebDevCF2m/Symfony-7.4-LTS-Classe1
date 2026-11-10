@@ -223,6 +223,8 @@ Pour la version `LTS` en 7.4, il faut au moins PHP 8.2 (PHP 8.1 suffisait pour l
 - Git
 - MySQL - MariaDB (depuis WampServer)
 
+**Nous utiliserons par la suite Docker pour le développement, mais il est possible de travailler sans Docker, en utilisant WampServer ou Xampp.**
+
 ---
 
 Retour au [Menu de navigation](#menu-de-navigation)
