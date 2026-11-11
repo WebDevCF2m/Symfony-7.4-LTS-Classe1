@@ -4,7 +4,11 @@
 
 Version LTS (Long Term Support) de Symfony en date du 10/11/2026
 
-Avec 2 ans de support et 3 ans de support de sécurité :
+Sortie en novembre 2025, avec 3 ans de corrections de bugs (jusqu'en novembre 2028) et 4 ans de correctifs de sécurité (jusqu'en novembre 2029) :
+
+https://symfony.com/releases/7.4
+
+> Ce cours a été écrit à l'origine en Symfony 6.4 (dépôt historique `Symfony-6.4-LTS`). Les différences avec la 7.4 sont listées dans la section [Incohérences entre Symfony 6.4 et Symfony 7.4](#incohérences-entre-symfony-64-et-symfony-74).
 
 https://endoflife.date/symfony
 
@@ -19,6 +23,7 @@ https://endoflife.date/symfony
 ---
 
 ## Menu de navigation
+- [Incohérences entre Symfony 6.4 et Symfony 7.4](#incohérences-entre-symfony-64-et-symfony-74)
 - [Code](https://github.com/mikhawa/Symfony-7.4-LTS)
     - [Historique de Symfony](#historique-de-symfony)
     - [Choix de Symfony](#choix-de-symfony)
@@ -144,8 +149,6 @@ https://endoflife.date/symfony
 ---
 
 
-
-
 ### Historique de Symfony
 
 `Symfony` est un `framework web open-source` écrit en `PHP`, qui a été créé par le développeur français `Fabien Potencier` en 2005. Le but principal de Symfony était de faciliter le développement d'applications web en fournissant un ensemble d'outils et de bibliothèques réutilisables, ainsi qu'une architecture claire et cohérente.
@@ -190,7 +193,7 @@ Il est utilisé par de nombreuses entreprises et organisations pour des projets 
 
 Voici une vue vidéo permettant de comparer Symfony et Laravel :
 
-https://grafikart.fr/tutoriels/laravel-symfony-866
+https://amphibee.fr/blog/laravel-vs-symfony
 
 Symfony vs Laravel est un débat digne d’intérêt entre ces deux frameworks riches en fonctionnalités.
 
@@ -210,15 +213,17 @@ Cependant, nous suggérons Laravel si vous souhaitez créer une application web 
 
 #### Environnement de développement
 
-Pour la version `LTS` en 6.4, PHP 8.1 est nécessaire, mais suffisant. Il faut au moins PHP 8.2 pour Symfony 7.*
+Pour la version `LTS` en 7.4, il faut au moins PHP 8.2 (PHP 8.1 suffisait pour la 6.4). Symfony 8.* demandera au moins PHP 8.4, il est donc conseillé de travailler directement en PHP 8.4.
 
 - Windows 10 ou 11
 - WampServer 3.2.5 ou supérieur
-- PHP 8.1 ou supérieur (depuis WampServer en le rajoutant dans le `PATH`, les variables d'environnement Windows)
+- PHP 8.2 ou supérieur, 8.4 conseillé (depuis WampServer en le rajoutant dans le `PATH`, les variables d'environnement Windows)
 - Composer
 - Symfony CLI
 - Git
 - MySQL - MariaDB (depuis WampServer)
+
+**Nous utiliserons par la suite Docker pour le développement, mais il est possible de travailler sans Docker, en utilisant WampServer ou Xampp.**
 
 ---
 
@@ -252,7 +257,6 @@ https://symfony.com/download
 Lien de téléchargement de Git :
 
 https://git-scm.com/download/win
-
 
 
 ---
@@ -344,12 +348,14 @@ Retour au [Menu de navigation](#menu-de-navigation)
 L'écriture de la commande suivante va créer un nouveau projet (dossier) Symfony, en utilisant la dernière version `LTS` de Symfony, et en utilisant le template `webapp`, qui est un template de base pour créer une application web.
 
 
-Lors de l'écriture de ces lignes la version LTS de Symfony est la version 6.4.10
+Lors de l'écriture de ces lignes (novembre 2026) la version LTS de Symfony est la version 7.4.23
 
 Dans la console, nous allons écrire la commande suivante :
 
 ```bash
-symfony new symfony6.4 --webapp --version=lts
+symfony new symfony7.4 --webapp --version=lts
+# ou en fixant explicitement la branche 7.4
+symfony new symfony7.4 --webapp --version="7.4.*"
 ```
 
 Voici le lien de la documentation officielle de Symfony pour créer un nouveau projet :
@@ -384,7 +390,7 @@ php bin/console
 symfony console
 ```
 
-- Le dossier `assets` contient les fichiers statiques de l'application, tels que les fichiers CSS, JavaScript, les images, etc. Ils seront compilés et minifiés par `Webpack Encore` (en Javascript avec `node.js`et `Yarn`) ou par `asset-mapper` (recommandé et installé depuis Symfony 6.4) qui utilise PHP pour effectuer la compilation et la minification des fichiers statiques.
+- Le dossier `assets` contient les fichiers statiques de l'application, tels que les fichiers CSS, JavaScript, les images, etc. Ils seront compilés et minifiés par `Webpack Encore` (en Javascript avec `node.js`et `Yarn`) ou par `asset-mapper` (recommandé et installé par défaut avec `--webapp` depuis Symfony 6.4, toujours le cas en 7.4) qui utilise PHP pour effectuer la compilation et la minification des fichiers statiques.
 
 
 - Le dossier `config` contient les fichiers de configuration de l'application, tels que les fichiers de configuration de la base de données, les fichiers de configuration de l'environnement, etc.
@@ -488,6 +494,8 @@ symfony console make:controller
 
 - Nom du contrôleur à indiquer : `PublicController`
 
+Nous ne créons pas les tests PHPUnit pour ce contrôleur, nous ne les verrons pas dans ce cours.
+
 2 fichiers ont été créés :
 
 - `src/Controller/PublicController.php`
@@ -500,7 +508,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class PublicController extends AbstractController
 {
@@ -540,12 +548,18 @@ Retour au [Menu de navigation](#menu-de-navigation)
 
 On peut créer des routes en utilisant 4 méthodes différentes :
 
-- `annotation` ou actuellement `attributes` : dans le contrôleur
+- `attributes` (anciennement `annotation`) : dans le contrôleur
 - `yaml` : dans le fichier `config/routes.yaml`
-- `xml` : dans le fichier `config/routes.xml`
 - `php` : dans le fichier `config/routes.php`
 
-Symfony utilise par défaut la méthode `annotation` et l'utilisation des `attributes` (depuis PHP 8) `#[Route()]` dans les contrôleurs.
+Symfony utilise par défaut les `attributes` (depuis PHP 8) `#[Route()]` dans les contrôleurs, importés avec `use Symfony\Component\Routing\Attribute\Route;`. Les annotations (`Symfony\Component\Routing\Annotation\Route`) sont dépréciées et disparaissent en Symfony 8.0.
+
+En 7.4, le fichier `config/routes.yaml` charge automatiquement les attributs de tous les contrôleurs :
+
+```yaml
+controllers:
+    resource: routing.controllers
+```
 
 Voir la documentation :
 
@@ -554,8 +568,6 @@ https://symfony.com/doc/current/routing.html
 Pour l'utilisation des attributs dans Symfony ou de manière plus générale dans PHP 8, voir ces liens :
 
 https://www.elao.com/blog/dev/les-attributs-php-8-dans-symfony
-
-https://grafikart.fr/tutoriels/attribut-php8-1371
 
 https://www.php.net/manual/fr/language.attributes.overview.php
 
@@ -605,7 +617,6 @@ Nous verrons notre route `public_accueil` avec la méthode `ANY` et le chemin `/
 
 Les routes en `_...` sont des routes qui permettent de voir les requêtes SQL, les requêtes HTTP, les variables globales, etc... en mode développement.
 
-[V0.2](https://github.com/mikhawa/Symfony-6.4-LTS/commit/1eabf668c19d7fbe39ffca19b40108e97fa9f4a7#diff-b1b5b30007fdfcd4be14b1260eb4278fa1bdc57cc7cd6224ef521116360b99e2)
 
 ---
 
@@ -660,9 +671,6 @@ Voir le guide des bonnes pratiques :
 https://symfony.com/doc/current/best_practices.html#use-the-yaml-format-to-configure-your-own-services
 
 
-[V0.3](https://github.com/mikhawa/Symfony-6.4-LTS/commit/8ca5c8996cc70cb17771647a1d4fb5593e5e2732)
-
-
 ---
 
 Retour au [Menu de navigation](#menu-de-navigation)
@@ -705,7 +713,6 @@ Sans protections, nous pouvons passer n'importe quoi dans l'id ! :
 
 https://127.0.0.1:8000/article/Coucou-les-amis
 
-[V0.3.1](https://github.com/mikhawa/Symfony-6.4-LTS/commit/cbf91805dbeaa7ec73d6fa4cbeb61aa1f6cebabb)
 
 ---
 
@@ -747,7 +754,6 @@ Pour debugger les routes, nous pouvons utiliser la commande suivante :
 php bin/console debug:router
 ```
 
-[V0.3.2](https://github.com/mikhawa/Symfony-6.4-LTS/commit/a27cedd9db12f1201b396326fbc05ca5bf16f6ea)
 
 ---
 
@@ -785,7 +791,6 @@ sans envoyer de paramètre#}
         avec un id de 15</a></li>
 ```
 
-[V0.3.3](https://github.com/mikhawa/Symfony-6.4-LTS/commit/a27cedd9db12f1201b396326fbc05ca5bf16f6ea)
 
 ---
 
@@ -839,8 +844,6 @@ Nous allons créer la base de données en utilisant la commande suivante :
 php bin/console doctrine:database:create
 ```
 
-[V0.4](https://github.com/mikhawa/Symfony-6.4-LTS/commit/eafd2e93820afa041b0849f7686a89057188717f)
-
 
 ---
 
@@ -857,7 +860,6 @@ Seront supprimés :
 - src/Controller/PublicController.php
 - templates/public/index.html.twig
 
-[V0.4.1](https://github.com/mikhawa/Symfony-6.4-LTS/releases/tag/v0.4.1)
 
 ---
 
@@ -986,8 +988,6 @@ Attention, si vous avez des données dans la DB, elles seront perdues, il faudra
 Deux autres tables ont été créées automatiquement : `messenger_messages` et `doctrine_migration_versions` pour gérer les messages (gestion asynchrone que nous verrons plus tard) et les migrations.
 
 
-[V0.4.2](https://github.com/mikhawa/Symfony-6.4-LTS/commit/61745abf8ec7e7fe4f97576ac645b9cd19320dd1)
-
 ---
 
 Retour au [Menu de navigation](#menu-de-navigation)
@@ -1095,7 +1095,6 @@ Nous allons faire quelques modifications dans le fichier `src/Entity/Article.php
 ``` 
 
 
-
 ---
 
 Retour au [Menu de navigation](#menu-de-navigation)
@@ -1116,7 +1115,6 @@ Nous allons maintenant effectuer la migration vers la DB :
 php bin/console doctrine:migrations:migrate
 ```
 
-[V0.4.3](https://github.com/mikhawa/Symfony-6.4-LTS/releases/tag/v0.4.3)
 
 ---
 
@@ -1177,9 +1175,6 @@ Nous allons faire quelques modifications dans le fichier `src/Entity/Categorie.p
  updated: src/Entity/Categorie.php
  updated: src/Entity/Article.php
 ```
-
-
-[V0.4.4](https://github.com/mikhawa/Symfony-6.4-LTS/commit/a25123e96c694506cea262401a321874284883fb#diff-6c398b4c27155c10ce5fcca09e4354392a097b432db26069e5135f8f64398029)
 
 
 ---
@@ -1244,7 +1239,6 @@ Fichiers créés :
 
 ```
 
-[V0.4.5](https://github.com/mikhawa/Symfony-6.4-LTS/commit/a3afb73a483a67bf4b8e65e4647c32a14bdcdfae)
 
 ---
 
@@ -1268,7 +1262,6 @@ php bin/console make:migration
 php bin/console doctrine:migrations:migrate
 ```
 
-[V0.4.6](https://github.com/mikhawa/Symfony-6.4-LTS/commit/6060f9edcd5a2adacc2bdd0e79ba268ad36f84e7)
 
 ---
 
@@ -1453,7 +1446,6 @@ php bin/console doctrine:migrations:migrate
 
 Database avant le remplissage :
 
-[v0.4.7](https://github.com/mikhawa/Symfony-6.4-LTS/releases/tag/v0.4.7)
 
 ---
 
@@ -1540,8 +1532,6 @@ php bin/console doctrine:fixtures:load
 
 Nous avons donc un utilisateur dans la base de données ! :)
 
-
-[v0.4.8](https://github.com/mikhawa/Symfony-6.4-LTS/commit/ba5164bb6cd609512f93d5b3b07ece0f8e52aadf#diff-95c4003977cca1f8472ede2b9816095727f735d46c3f5467b42126ee72d35825)
 
 ---
 
@@ -1671,8 +1661,6 @@ php bin/console doctrine:fixtures:load
 
 !!! Il faut utiliser `doctrine:fixtures:load --append` pour ne pas perdre les données déjà présentes dans la base de données.
 
-
-[v0.4.9](https://github.com/mikhawa/Symfony-6.4-LTS/commit/dca9af93c306fc2058b4aeb383d64ea6ffab44c5#diff-5d12fa212ca0735a3554a8614bee32a0e5e687cd0ab820c3af8c7b21883adcdd)
 
 ---
 
@@ -1815,7 +1803,6 @@ Le fichier .sql :
 
 https://raw.githubusercontent.com/mikhawa/Symfony-6.4-LTS/refs/heads/main/datas/sym_64_2024_10_03_14_19.sql
 
-[v0.4.10](https://github.com/mikhawa/Symfony-6.4-LTS/commit/e3de7dbe984e44b12c0598fdef6c2098460844a8)
 
 ---
 
@@ -1841,7 +1828,7 @@ use Symfony\Component\HttpFoundation\Response;
 # Importation de la classe Request
 use Symfony\Component\HttpFoundation\Request;
 # Importation de la classe Route
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 # Appel de l'ORM Doctrine
 use Doctrine\ORM\EntityManagerInterface;
 # Importation de l'entité Categorie
@@ -1886,7 +1873,6 @@ https://127.0.0.1:8000/
 
 Maintenant que nous voyons que c'est fonctionnel, nous allons créer un template de base pour notre application.
 
-[v0.5](https://github.com/mikhawa/Symfony-6.4-LTS/commit/3ac1e3caa456608587728fa74ab43c2ad3f7c78a#diff-f8af05fe3ed91657a96bece8df2f0639855fdbe18e5287e3186e088e66664cd0)
 
 ---
 
@@ -1919,8 +1905,6 @@ https://startbootstrap.com/template/business-frontpage
 Nous pouvons le dézipper dans le dossier `datas` et nous allons le modifier pour l'adapter à notre projet.
 
 
-[v0.5.1](https://github.com/mikhawa/Symfony-6.4-LTS/tree/main/datas)
-
 ---
 
 Retour au [Menu de navigation](#menu-de-navigation)
@@ -1929,7 +1913,7 @@ Retour au [Menu de navigation](#menu-de-navigation)
 
 ## Choix du système de gestion des assets
 
-Vous avez le choix entre plusieurs systèmes de gestion des assets pour votre projet Symfony 6.4 LTS :
+Vous avez le choix entre plusieurs systèmes de gestion des assets pour votre projet Symfony 7.4 LTS :
 
 - [AssetMapper](#utilisation-par-défaut-de-assetmapper)
 - [Webpack Encore](#utilisation-de-webpack-encore)
@@ -2035,7 +2019,6 @@ Ce fichier va contenir le code HTML de base de notre application. C'est là que 
 
 Nous voyons dans les commentaires que nous pouvons utiliser `importmap` et `AssetMapper` pour gérer les fichiers `CSS` et `JS` de notre projet.
 
-[v0.5.2](https://github.com/mikhawa/Symfony-6.4-LTS/commit/76f0f56f3df7483cc857381c9fa4dfa78fd37e5c#diff-5a6565b208e6ab8222ae5be3180f45af0410b09d94250b64f42d7e7041bd4250)
 
 ---
 
@@ -2158,8 +2141,6 @@ Dorénavant, nous pouvons utiliser `Bootstrap` dans notre projet, car les lignes
 {# .... #}
 ```
 
-[v0.5.3](https://github.com/mikhawa/Symfony-6.4-LTS/commit/c6873c1115c5b876cc7ee221b4c42602596756a9#diff-489e15dd56f2315dc02d3d1723571cdad5a1b6848609eb5aeb0b476118bb8236)
-
 
 ---
 
@@ -2210,7 +2191,6 @@ Voici le fichier `templates/base.html.twig` :
 </html>
 ```
 
-[v0.5.4](https://github.com/mikhawa/Symfony-6.4-LTS/commit/d97717d12f06e5bd5bc4ab387b63b64a1f10a158#diff-5a6565b208e6ab8222ae5be3180f45af0410b09d94250b64f42d7e7041bd4250)
 
 ---
 
@@ -2351,10 +2331,11 @@ Retour au [Menu de navigation](#menu-de-navigation)
 ---
 
 
-
 ### Utilisation de Webpack Encore
 
 Nous pouvons également utiliser `Webpack Encore` pour gérer les fichiers `CSS` et `JS` de notre projet.
+
+> **Symfony 7.4** : la documentation indique que `Webpack Encore` est en mode « low-maintenance » (corrections de bugs et de sécurité uniquement). Pour un nouveau projet, `AssetMapper` est recommandé.
 
 ```bash
 # désinstallation de AssetMapper
@@ -2450,8 +2431,6 @@ Notre site est de nouveau fonctionnel :
 https://127.0.0.1:8000/
 
 
-[v0.4.0](https://github.com/mikhawa/symfony-2023-05-10/commit/f1e4e98e01a59208b25947f391e65862545b93df#diff-bc37d034bad564583790a46f19d807abfe519c5671395fd494d8cce506c42947)
-
 ---
 
 Retour au [Menu de navigation](#menu-de-navigation)
@@ -2526,15 +2505,12 @@ Notre site est de nouveau fonctionnel :
 
 https://127.0.0.1:8000/
 
-[v0.4.1](https://github.com/mikhawa/symfony-2023-05-10/commit/52f71956fa6f84bbbc0aa6f94105551ba8a7d871#diff-5a6565b208e6ab8222ae5be3180f45af0410b09d94250b64f42d7e7041bd4250)
-
 
 ---
 
 Retour au [Menu de navigation](#menu-de-navigation)
 
 ---
-
 
 
 #### Modification de base.html.twig
@@ -2698,7 +2674,6 @@ Nous pouvons maintenant utiliser le template dans notre projet :
 
 ```
 
-[v0.4.2](https://github.com/mikhawa/symfony-2023-05-10/commit/528c63a9bbd6db6ffb056f30708c8910721285d5)
 
 ### Utilisation des assets de base
 
@@ -2717,7 +2692,6 @@ https://symfony.com/doc/current/components/asset.html
 Retour au [Menu de navigation](#menu-de-navigation)
 
 ---
-
 
 
 ### Création de la page d'accueil
@@ -2813,7 +2787,6 @@ Après avoir créé le template `categorie.html.twig` nous pouvons voir le résu
 ...
 ```
 
-[v0.4.3](https://github.com/mikhawa/symfony-2023-05-10/commit/aa0d2e7581ccea147b888004ba385b2b9cfe8588#diff-f8af05fe3ed91657a96bece8df2f0639855fdbe18e5287e3186e088e66664cd0)
 
 ---
 
@@ -2865,8 +2838,6 @@ Et dans le template `categorie.html.twig` :
     {% endfor %}
 {% endblock %}
 ```
-
-[v0.4.4](https://github.com/mikhawa/symfony-2023-05-10/commit/ddb5b07bc1cb4cde9853d26333b3d1eff1691f44#diff-f8af05fe3ed91657a96bece8df2f0639855fdbe18e5287e3186e088e66664cd0)
 
 
 ---
@@ -2924,7 +2895,6 @@ Nous allons d'abord créer les liens vers les articles dans la section `categori
 Retour au [Menu de navigation](#menu-de-navigation)
 
 ---
-
 
 
 #### Affichage d'un résumé de l'article avec slice
@@ -3010,7 +2980,6 @@ Retour au [Menu de navigation](#menu-de-navigation)
 ---
 
 
-
 #### Création de la vue `article.html.twig`
 
 Nous allons maintenant créer la vue
@@ -3042,7 +3011,6 @@ Nous allons maintenant créer la vue
 ...
 ```
 
-[v0.4.5](https://github.com/mikhawa/symfony-2023-05-10/commit/8bca1487359034c0e0a21520e483b80cb5f244c0#diff-da5d78d1e07dfc565fe1017f09e3be6840ab3bd4d9f75d0a0f7dee274066f68d)
 
 ---
 
@@ -3187,7 +3155,6 @@ Nous devons créer la relation inverse dans l'entité `Article`, puis l'appeler 
     }
 ```
 
-[v0.4.6](https://github.com/mikhawa/symfony-2023-05-10/commit/f2b2a41ca53cd84ddad23f2787ad8ddea0a45ebc#diff-6c398b4c27155c10ce5fcca09e4354392a097b432db26069e5135f8f64398029)
 
 ---
 
@@ -3319,7 +3286,6 @@ Ensuite, nous pouvons modifier les vues `article.html.twig` et `commentaire.html
 </div>
 ```
 
-[v0.4.7](https://github.com/mikhawa/symfony-2023-05-10/commit/404b883bdf961db615db7c5af3f053687cc1d418#diff-f8af05fe3ed91657a96bece8df2f0639855fdbe18e5287e3186e088e66664cd0)
 
 ---
 
@@ -3336,6 +3302,8 @@ L'email et le mot de passe crypté sont stockés dans la table `utilisateur` de 
 Nous allons créer tout le système de connexion avec un formulaire de connexion, les vérifications de sécurités pour l'authentification des utilisateurs en une seule commande !
 
 Pour cela, nous allons utiliser la commande `make:auth` :
+
+> **Symfony 7.4** : `make:auth` existe toujours dans MakerBundle 1.68, mais la documentation officielle (6.4 comme 7.4) recommande `php bin/console make:security:form-login`, qui utilise l'authentificateur intégré `form_login` au lieu de générer une classe `UtilisateurAuthenticator`. Nous gardons `make:auth` pour suivre la suite du cours.
 
 ```bash
 php bin/console make:auth
@@ -3402,7 +3370,8 @@ security:
                 property: email
     firewalls:
         dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            # Symfony 7.4 (6.4 : ^/(_(profiler|wdt)|css|images|js)/)
+            pattern: ^/(_profiler(/|$)|(_wdt|assets|build)/)
             security: false
         main:
             lazy: true
@@ -3453,7 +3422,6 @@ https://127.0.0.1:8000/login
 
 Nous devrions être connectés et redirigés vers la page d'accueil.
 
-[v0.5.0](https://github.com/mikhawa/symfony-2023-05-10/pull/3/commits/c8586fd44b47299abd64274ac0e01705602d93f5#diff-19446c4b69407952b20ae26dbd032cdad8dcc487db081a5cb17261831e80a4cc)
 
 ---
 
@@ -3590,7 +3558,6 @@ remember_me:
 
 Ainsi le cookie `REMEMBERME` ne sera pas créé par défaut.
 
-[v0.5.1](https://github.com/mikhawa/symfony-2023-05-10/commit/e3a5154e1cafcda75f2aa72de8a3524c948bd335#diff-2f3e529a92a275218fe2869988c9edc3fe6c614ed0d2212160a2dfbebc1ade5a)
 
 ---
 
@@ -3721,8 +3688,6 @@ Nous allons modifier le fichier `src/Entity/Commentaire.php` et lui ajouter un c
 
 ```
 
-[v0.5.2](https://github.com/mikhawa/symfony-2023-05-10/commit/696a44afccaf36b5368254e24510cfc8a71548bb#diff-bfda95459173a4f13453f500a164b7f3afdc09bed8d039383e8d94fabcce2649)
-
 
 ---
 
@@ -3766,8 +3731,6 @@ https://127.0.0.1:8000/admin/commentaire/
 
 Nous avons désormais une erreur `Access Denied` et une redirection sur https://127.0.0.1:8000/connect si nous ne sommes pas connecté.
 
-
-[v0.5.3](https://github.com/mikhawa/symfony-2023-05-10/commit/00723a787a3665b2063706d45f5f525fc062edfa#diff-19446c4b69407952b20ae26dbd032cdad8dcc487db081a5cb17261831e80a4cc)
 
 ---
 
@@ -3930,8 +3893,6 @@ Nous pourrions utiliser le `form` qui est `null` dans ce cas, mais nous allons v
 ###
 ```
 
-[v0.5.4](https://github.com/mikhawa/symfony-2023-05-10/commit/ae2b653e719b64b2fddce65df59213575a23c16a#diff-a346cbc5f2d083857493e8f4c52eb1c0ababf3ea60a4b20f407ed10432666faf)
-
 
 ---
 
@@ -4014,7 +3975,6 @@ namespace App\Security;
 ###
 ```
 
-[v0.5.5](https://github.com/mikhawa/symfony-2023-05-10/commit/400ce27dc8ebbbfcf35f63a04e917634a4a458b5#diff-f8af05fe3ed91657a96bece8df2f0639855fdbe18e5287e3186e088e66664cd0)
 
 ---
 
@@ -4054,7 +4014,6 @@ Nous allons modifier le contrôleur `BlogController.php` pour changer l'ordre de
 
 Nous allons ensuite modifier le template `templates/public/inc/commentaire.html.twig` remettre la variable `commentaires` dans la page à la place de `article.Commentaires`
 
-[v0.5.6](https://github.com/mikhawa/symfony-2023-05-10/commit/8830e5667a962713760cc24f21c397c0f8853908#diff-f8af05fe3ed91657a96bece8df2f0639855fdbe18e5287e3186e088e66664cd0)
 
 ---
 
@@ -4175,7 +4134,6 @@ php bin/console doctrine:migrations:migrate
 
 A l'adresse : `datas/sym_64_2023-08-31.sql`, n'oubliez pas d'importer ce fichier dans votre DB locale.
 
-[v0.5.7](https://github.com/mikhawa/symfony-2023-05-10/commit/09c867baac95d97856871484b126b334d7a6f202#diff-e270d1e885665b0eaf1868155ad57e3d28ffba0047c1a542a52cf537b869e081)
 
 ---
 
@@ -4218,7 +4176,7 @@ Nous allons ensuite mettre à jour le fichier `.env.local`, ici le `.env.` pour 
 ```bash
 ###> symfony/google-mailer ###
 # Gmail SHOULD NOT be used on production, use it in development only.
-# MAILER_DSN=gmail://USERNAME:PASSWORD@default
+# MAILER_DSN=gmail+smtp://USERNAME:APP-PASSWORD@default
 ###< symfony/google-mailer ###
 ```
 
@@ -4503,7 +4461,6 @@ use App\Entity\Categorie;
         ###
 ```
 
-[v0.5.8](https://github.com/mikhawa/symfony-2023-05-10/commit/602c69a189f032c07679c7d2af7b925417cfd8e2#diff-d6e0320f959fd80725fad202416df75fa98c151cd17f17879872f7ebbd50e2e0)
 
 ---
 
@@ -4540,6 +4497,22 @@ Puis nous allons créer un tableau de bord pour l'administration :
 
 ```bash
 php bin/console make:admin:dashboard
+```
+
+> **EasyAdmin 5 (version installée avec Symfony 7.4)** : la route du tableau de bord se déclare avec l'attribut `#[AdminDashboard]` sur la classe, et non plus avec `#[Route]` sur la méthode `index()` :
+
+```php
+use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+
+#[AdminDashboard(routePath: '/admin', routeName: 'admin')]
+class DashboardController extends AbstractDashboardController
+{
+    public function index(): Response
+    {
+        return $this->render('admin/admin.homepage.html.twig');
+    }
+}
 ```
 
 On y accède à cette URL :
@@ -4579,7 +4552,7 @@ On peut ensuite configurer le tableau de bord dans le fichier :
 
 ```php
 ###
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 # Importation des entités utiles
 use App\Entity\Categorie;
 use App\Entity\Article;
@@ -4696,7 +4669,6 @@ On peut les utiliser immédiatement en le mettant dans les liens du fichier :
         ];
 ```
 
-[v0.5.9](https://github.com/mikhawa/symfony-2023-05-10/commit/6d725b61ec2e320bc95c93c1dd6efd17d152c614#diff-d1c087a6c634dad04bbc797bc3f22cff5a33778fd6ce1a5add3e7d8ef8c72df6)
 
 ---
 
@@ -4862,7 +4834,6 @@ public function __toString(): string
 ###
 ```
 
-[v0.5.10](https://github.com/mikhawa/symfony-2023-05-10/commit/4427610ac9fe3202e10627c33ad3d3d9d64c58d9#diff-aac03435af3425fceb1fcd79866ac2a82be156cf64d00346f6a0f2e41895dfed)
 
 ---
 
@@ -5038,11 +5009,17 @@ Dans le fichier `src/Controller/Admin/DashboardController.php`
 
 ```php
 ###
-// on ajoute la variable { _locale } pour la langue à l'URL
-#[Route('/admin/{_locale}', name: 'admin')]
+// Symfony 6.4 / EasyAdmin 4 : on ajoutait la variable { _locale } pour la langue à l'URL
+// #[Route('/admin/{_locale}', name: 'admin')]
+// EasyAdmin 5 : la route est définie uniquement par #[AdminDashboard] sur la classe
+#[AdminDashboard(routePath: '/admin', routeName: 'admin')]
+class DashboardController extends AbstractDashboardController
+{
     public function index(): Response
 ###
 ```
+
+> **Symfony 7.4 / EasyAdmin 5** : la documentation indique que « la route du tableau de bord doit être définie avec l'attribut `#[AdminDashboard]` ; aucune autre façon de configurer une route ne fonctionnera ». La traduction passe donc par `default_locale: fr` ci-dessous plutôt que par `{_locale}` dans l'URL.
 
 Puis on change la locale dans le fichier `config/packages/translation.yaml`
 
@@ -5051,9 +5028,9 @@ framework:
     default_locale: fr
 ```
 
-Les boutons seront automatiquement traduits en français avec une URL de ce type :
+Les boutons seront automatiquement traduits en français (en 6.4 avec une URL de type `https://127.0.0.1:8000/admin/fr`, en 7.4 / EasyAdmin 5 directement sur) :
 
-https://127.0.0.1:8000/admin/fr
+https://127.0.0.1:8000/admin
 
 On peut aussi traduire le titre et contenu du tableau de bord de l'administration dans le fichier
 
@@ -5063,7 +5040,6 @@ On peut aussi traduire le titre et contenu du tableau de bord de l'administratio
 {% block content_title %}Administration du site{% endblock %}
 ```
 
-[v0.5.11](https://github.com/mikhawa/symfony-2023-05-10/commit/45238bafaca00d91716e3f3a873ef3a45701d204#diff-90802cb0c2e0f8d3951bb790ec936581bf7dc98aabdc64f2159598ae51d0dce9)
 
 ---
 
@@ -5127,3 +5103,4 @@ Retour au [Menu de navigation](#menu-de-navigation)
 
 ---
 
+---
