@@ -23,7 +23,7 @@ https://endoflife.date/symfony
 ---
 
 ## Menu de navigation
-- [Incohérences entre Symfony 6.4 et Symfony 7.4](#incohérences-entre-symfony-64-et-symfony-74)
+
 - [Code](https://github.com/mikhawa/Symfony-7.4-LTS)
     - [Historique de Symfony](#historique-de-symfony)
     - [Choix de Symfony](#choix-de-symfony)
@@ -550,6 +550,7 @@ On peut créer des routes en utilisant 4 méthodes différentes :
 
 - `attributes` (anciennement `annotation`) : dans le contrôleur
 - `yaml` : dans le fichier `config/routes.yaml`
+- `xml` : disparait en Symfony 8
 - `php` : dans le fichier `config/routes.php`
 
 Symfony utilise par défaut les `attributes` (depuis PHP 8) `#[Route()]` dans les contrôleurs, importés avec `use Symfony\Component\Routing\Attribute\Route;`. Les annotations (`Symfony\Component\Routing\Annotation\Route`) sont dépréciées et disparaissent en Symfony 8.0.
@@ -804,6 +805,12 @@ Nous allons créer un fichier `.env.local` en copiant le fichier `.env` et en le
 
 ```bash 
 cp .env .env.local
+```
+
+Pour créer la clé pour la production : 
+
+```bash
+php -r "echo bin2hex(random_bytes(32));"
 ```
 
 Ou d'une autre manière en utilisant la commande suivante :
