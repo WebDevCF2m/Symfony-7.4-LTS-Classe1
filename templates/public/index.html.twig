@@ -9,7 +9,9 @@
 </style>
 
 <div class="example-wrapper">
+    {# affichage de varaiables #}
     <h1>Salut {{ nom }} {{ controller_name }}! ✅</h1>
+    {# failles xss protégées par défault, sinon on ajoute |raw #}
     {{ xss }} | {{ monJS|raw }}
 
     This friendly message is coming from:
