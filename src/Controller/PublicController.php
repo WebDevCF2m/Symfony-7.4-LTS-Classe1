@@ -31,4 +31,8 @@ final class PublicController extends AbstractController
             'title' => "Contact",
         ]);
     }
+
+    # ON EST ICI
+
+    /* https://github.com/WebDevCF2m2026/Symfony-7.4-LTS-Classe1#cr%C3%A9ation-dune-route-avec-param%C3%A8tre */
 }
