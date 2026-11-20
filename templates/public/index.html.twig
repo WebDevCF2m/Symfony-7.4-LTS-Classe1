@@ -3,20 +3,26 @@
 {# surcharge du du bloc title en utilisant le {{ parent() }} #}
 {% block title %}{{ parent() }}Homepage{% endblock %}
 
-{% block body %}
-
-<div class="example-wrapper">
-    {# affichage de varaiables #}
+{% block header %}<div class="example-wrapper">
+    {# affichage de variables #}
     <h1>Salut {{ nom }} {{ controller_name }}! ✅</h1>
+
+<navbar>
+    {# toujours en absolu par rapport à template #}
+    {% include 'public/inc/menu.html.twig' %}
+</navbar>
+{% endblock %}
+{% block main %}
     {# failles xss protégées par défault dans Symfony, (twig sans symfony xss|e ou xss|escape)
      sinon on ajoute |raw #}
     {{ xss }} | {{ monJS|raw }}
 
     This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/WEB2026/Symfony-7.4-LTS-Classe1/src/Controller/PublicController.php</code></li>
-        <li>Your template at <code>C:/WEB2026/Symfony-7.4-LTS-Classe1/templates/public/index.html.twig</code></li>
-    </ul>
+
+
+{% endblock %}
+{% block footer %}
+
 </div>
 {% endblock %}
 
