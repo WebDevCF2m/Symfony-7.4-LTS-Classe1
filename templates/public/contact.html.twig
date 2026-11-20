@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{# surcharge du du bloc title en utilisant le {{ parent() }} #}
+{% block title %}{{ parent() }}{{ title }}{% endblock %}
+
+{% block header %}
+<navbar>
+    {# toujours en absolu par rapport à template #}
+    {% include 'public/inc/_menu.html.twig' %}
+</navbar>
+<div class="example-wrapper">
+    {# affichage de variables #}
+    <h1>{{ title }} ✅</h1>
+
+
+{% endblock %}
+{% block main %}
+
+
+
+{% endblock %}
+{% block footer %}
+
+</div>
+{% endblock %}
+
+{# l'ordre des blocks ne doit pas être respecté, sauf sous-ensemble #}
+{% block language %}fr{% endblock %}

@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {# surcharge du du bloc title en utilisant le {{ parent() }} #}
-{% block title %}{{ parent() }}Homepage{% endblock %}
+{% block title %}{{ parent() }}{{ title }}{% endblock %}
 
 {% block header %}
 <navbar>
     {# toujours en absolu par rapport à template #}
-    {% include 'public/inc/menu.html.twig' %}
+    {% include 'public/inc/_menu.html.twig' %}
 </navbar>
 <div class="example-wrapper">
     {# affichage de variables #}
@@ -19,7 +19,7 @@
      sinon on ajoute |raw #}
     {{ xss }} | {{ monJS|raw }}
 
-    This friendly message is coming from:
+    <h2>{{ title }}</h2>
 
 
 {% endblock %}

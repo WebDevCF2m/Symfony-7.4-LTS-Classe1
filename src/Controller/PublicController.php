@@ -14,7 +14,8 @@ final class PublicController extends AbstractController
     {
         $nom = "Michaël";
         return $this->render('public/index.html.twig', [
-            # ON EST ICI
+
+            'title' => "Homepage",
             'controller_name' => 'PublicController',
             'nom' => $nom,
             'xss' => "<script> alert('xss attack!'); </script>",
@@ -23,9 +24,11 @@ final class PublicController extends AbstractController
     }
 
     // le routing n'est pas présent ici
+    // mais est présent dans config/routes.yaml
     public function contact(): Response
     {
-        // Nous allons envoyer une réponse de type texte en utilisant la classe Response (html basique)
-        return new Response('<h1>Page de contact</h1><a href="./">Retour à l\'accueil</a>');
+        return $this->render('public/contact.html.twig', [
+            'title' => "Contact",
+        ]);
     }
 }
