@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class PublicController extends AbstractController
 {
+    // L'attribut gère le routing
     #[Route('/', name: 'homepage')]
     public function index(): Response
     {
@@ -19,5 +20,12 @@ final class PublicController extends AbstractController
             'xss' => "<script> alert('xss attack!'); </script>",
             'monJS' => "<script> document.write('js accepté'); </script>",
         ]);
+    }
+
+    // le routing n'est pas présent ici
+    public function contact(): Response
+    {
+        // Nous allons envoyer une réponse de type texte en utilisant la classe Response (html basique)
+        return new Response('<h1>Page de contact</h1><a href="./">Retour à l\'accueil</a>');
     }
 }

@@ -3,14 +3,16 @@
 {# surcharge du du bloc title en utilisant le {{ parent() }} #}
 {% block title %}{{ parent() }}Homepage{% endblock %}
 
-{% block header %}<div class="example-wrapper">
-    {# affichage de variables #}
-    <h1>Salut {{ nom }} {{ controller_name }}! ✅</h1>
-
+{% block header %}
 <navbar>
     {# toujours en absolu par rapport à template #}
     {% include 'public/inc/menu.html.twig' %}
 </navbar>
+<div class="example-wrapper">
+    {# affichage de variables #}
+    <h1>Salut {{ nom }} {{ controller_name }}! ✅</h1>
+
+
 {% endblock %}
 {% block main %}
     {# failles xss protégées par défault dans Symfony, (twig sans symfony xss|e ou xss|escape)
